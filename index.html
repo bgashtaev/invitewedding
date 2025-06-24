@@ -205,9 +205,10 @@
 
       <button type="submit" id="submitBtn">📨 Отправить</button>
     </form>
-    <p id="thankYouMessage" style="display:none; text-align:center; margin-top:20px; font-size:1.2em; color:green;">
-      Спасибо! Ваша заявка отправлена 💌
-    </p>
+  <p id="thankYouMessage" style="display:none; text-align:center; margin-top:20px; font-size:1.2em; color:green;">
+    Спасибо! Ваша заявка отправлена 💌<br>
+    <span class="telegram-link">Будем рады, если вы запишете кружочки 📹 и поделитесь ими в <a href="https://t.me/+0qK6wIe_i2xjYmZh" target="_blank">нашей Telegram-беседе</a></span>
+  </p>
   </section>
 
   <footer>
@@ -258,7 +259,7 @@
       btn.textContent = '⏳ Отправляется...';
 
       const data = new FormData(form);
-      const message = `Заявка с сайта:\nФамилия: ${data.get('surname')}\nИмя: ${data.get('name')}\nПрисутствие: ${data.get('attendance')}\nКомментарий: ${data.get('message')}`;
+      const message = `Анкета с сайта:\nФамилия: ${data.get('surname')}\nИмя: ${data.get('name')}\nПрисутствие: ${data.get('attendance')}\nКомментарий: ${data.get('message')}`;
 
       fetch(`https://api.telegram.org/bot7595772666:AAHRlv94gkV4jXDgaZDg1fVWbMN-K9N74-A/sendMessage`, {
         method: 'POST',
