@@ -186,7 +186,11 @@
   </section>
 
   <section class="rsvp">
-    <h2>АНКЕТА ГОСТЯ</h2>
+    <h2>
+      
+      
+      
+      АНКЕТА ГОСТЯ</h2>
     <p style="text-align: center; font-size: 1.1em; margin-bottom: 10px;">Подтвердите, пожалуйста,<br>своё присутствие до <strong>01.09.2025</strong></p>
     <form id="guestForm">
       <label for="surname">Ваша фамилия:</label>
@@ -259,7 +263,7 @@
       btn.textContent = '⏳ Отправляется...';
 
       const data = new FormData(form);
-      const message = `Анкета с сайта:\nФамилия: ${data.get('surname')}\nИмя: ${data.get('name')}\nПрисутствие: ${data.get('attendance')}\nКомментарий: ${data.get('message')}`;
+      const message = `📝Анкета с сайта:\nФамилия: ${data.get('surname')}\nИмя: ${data.get('name')}\nПрисутствие: ${data.get('attendance')}\nКомментарий: ${data.get('message')}`;
 
       fetch(`https://api.telegram.org/bot7595772666:AAHRlv94gkV4jXDgaZDg1fVWbMN-K9N74-A/sendMessage`, {
         method: 'POST',
