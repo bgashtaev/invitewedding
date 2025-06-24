@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Иван и Делгира — Свадебное приглашение</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Cinzel', serif;
@@ -34,6 +34,16 @@
     .subtitle {
       font-size: 1.2em;
       margin-top: 10px;
+    }
+
+    .photo {
+      margin-top: 30px;
+    }
+
+    .photo img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .countdown {
@@ -79,6 +89,7 @@
     .details h2, .rsvp h2 {
       font-size: 2em;
       margin-bottom: 10px;
+      text-align: center;
     }
 
     .map iframe {
@@ -120,6 +131,11 @@
       border-radius: 5px;
     }
 
+    input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
     button {
       margin-top: 20px;
       padding: 10px;
@@ -149,6 +165,9 @@
     <h1>Иван & Делгира</h1>
     <p class="date">24 августа 2025</p>
     <p class="subtitle">Мы будем счастливы видеть вас на нашей свадьбе</p>
+    <div class="photo">
+      <img src="delyaivan.jpg" alt="Иван и Делгира">
+    </div>
     <div class="countdown" id="countdown">
       <div class="count-item"><div class="count-number" id="days">0</div><div class="count-label">дней</div></div>
       <div class="count-item"><div class="count-number" id="hours">0</div><div class="count-label">часов</div></div>
@@ -159,7 +178,7 @@
 
   <section class="details">
     <h2>Место проведения</h2>
-    <p>Ресторан «Даяна», Элиста</p>
+    <p style="text-align: center;">Ресторан «Даяна», Элиста</p>
     <div class="map">
       <iframe src="https://yandex.com/map-widget/v1/?ll=44.217410%2C46.313102&z=15.44&oid=1010203168" frameborder="0" allowfullscreen></iframe>
       <a href="https://yandex.com/maps/org/dayana/1010203168/?ll=44.217410%2C46.313102&z=15.44" target="_blank" class="map-button">Открыть в Яндекс.Картах</a>
@@ -167,19 +186,28 @@
   </section>
 
   <section class="rsvp">
-    <h2>Подтвердите участие</h2>
-    <form action="https://formspree.io/f/mnqepzvj" method="POST">
-      <label for="name">Ваше имя</label>
+    <h2>АНКЕТА ГОСТЯ</h2>
+    <p style="text-align: center; font-size: 1.1em; margin-bottom: 10px;">Подтвердите, пожалуйста,<br>своё присутствие до <strong>01.09.2025</strong></p>
+    <form id="guestForm">
+      <label for="surname">Ваша фамилия:</label>
+      <input type="text" id="surname" name="surname" required>
+
+      <label for="name">Ваше имя:</label>
       <input type="text" id="name" name="name" required>
 
-      <label for="guests">Количество гостей</label>
-      <input type="number" id="guests" name="guests" min="1" max="10" required>
+      <p style="margin-top: 20px; font-weight: bold;">Присутствие:</p>
+      <label><input type="radio" name="attendance" value="Приду с удовольствием" required> Я с удовольствием приду</label>
+      <label><input type="radio" name="attendance" value="Приду с парой или семьёй"> Буду со своей парой или семьёй</label>
+      <label><input type="radio" name="attendance" value="Не смогу"> К сожалению, не смогу присутствовать</label>
 
-      <label for="message">Комментарий</label>
+      <label for="message">Комментарий:</label>
       <textarea id="message" name="message"></textarea>
 
-      <button type="submit">Отправить</button>
+      <button type="submit" id="submitBtn">📨 Отправить</button>
     </form>
+    <p id="thankYouMessage" style="display:none; text-align:center; margin-top:20px; font-size:1.2em; color:green;">
+      Спасибо! Ваша заявка отправлена 💌
+    </p>
   </section>
 
   <footer>
@@ -221,6 +249,42 @@
 
     setInterval(updateCountdown, 1000);
     updateCountdown();
+
+    document.getElementById('guestForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Отправляется...';
+
+      const data = new FormData(form);
+      const message = `Заявка с сайта:\nФамилия: ${data.get('surname')}\nИмя: ${data.get('name')}\nПрисутствие: ${data.get('attendance')}\nКомментарий: ${data.get('message')}`;
+
+      fetch(`https://api.telegram.org/bot7595772666:AAHRlv94gkV4jXDgaZDg1fVWbMN-K9N74-A/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: -4975698934,
+          text: message
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          form.style.display = 'none';
+          document.getElementById('thankYouMessage').style.display = 'block';
+        } else {
+          btn.disabled = false;
+          btn.textContent = '📨 Отправить';
+          alert('Ошибка при отправке. Попробуйте ещё раз.');
+        }
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = '📨 Отправить';
+        alert('Сбой соединения. Попробуйте позже.');
+      });
+    });
   </script>
 </body>
 </html>
